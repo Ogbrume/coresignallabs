@@ -73,6 +73,35 @@
     .cta:hover {
       background: #00e6cc;
     }
+    #promptBox {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background: #121212;
+      border: 1px solid #333;
+    }
+    #userResponse {
+      margin-top: 0.5rem;
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid #444;
+      background: #0e0e0e;
+      color: #eee;
+    }
+    #submitBtn, #generateBtn {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      background-color: #0ff;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+    #submitBtn:hover, #generateBtn:hover {
+      background-color: #00e6cc;
+    }
   </style>
 </head>
 <body>
@@ -84,6 +113,11 @@
     <div class="module">
       <h2>Cognitive Core</h2>
       <p>Daily prompts and guided reflections to evolve your thinking and awaken mental clarity.</p>
+      <div id="promptBox"></div>
+      <textarea id="userResponse" rows="4" placeholder="Your reflection..."></textarea>
+      <br>
+      <button id="submitBtn">Submit Reflection</button>
+      <button id="generateBtn">New Prompt</button>
     </div>
     <div class="module">
       <h2>Sim-Seed Engine</h2>
@@ -102,5 +136,6 @@
     <p>&copy; 2025 CoreSignalLabs. All rights reserved.</p>
     <a class="cta" href="#">Enter the Lab</a>
   </footer>
+  <script src="cognitive-core.js"></script>
 </body>
 </html>
