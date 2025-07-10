@@ -73,7 +73,7 @@
     .cta:hover {
       background: #00e6cc;
     }
-    #promptBox, #seedOutput, #timelineOutput {
+    #promptBox, #seedOutput, #timelineOutput, #utopiaOutput {
       margin-top: 1rem;
       padding: 1rem;
       border-radius: 0.5rem;
@@ -153,6 +153,10 @@
     <div class="module">
       <h2>Utopia Scaffolder</h2>
       <p>Build alternate systems, lives, or societies. Construct and simulate the better world.</p>
+      <textarea id="utopiaInput" rows="4" placeholder="Describe your utopia vision (themes, values, structures)..."></textarea>
+      <br>
+      <button id="scaffoldUtopiaBtn">Generate Utopia Blueprint</button>
+      <div id="utopiaOutput"></div>
     </div>
   </main>
   <footer>
@@ -162,84 +166,19 @@
   <script src="cognitive-core.js"></script>
   <script src="sim-seed.js"></script>
   <script>
-    const timelineOutput = document.getElementById('timelineOutput');
-    const timelineInput = document.getElementById('timelineEventInput');
-    const categorySelect = document.getElementById('eventCategory');
-    const addTimelineEventBtn = document.getElementById('addTimelineEventBtn');
-    const saveTimelineBtn = document.getElementById('saveTimelineBtn');
-    const loadTimelineBtn = document.getElementById('loadTimelineBtn');
-    const exportBtn = document.getElementById('exportTimelineBtn');
-    const importBtn = document.getElementById('importTimelineBtn');
-    const importFile = document.getElementById('importTimelineFile');
+    const utopiaInput = document.getElementById('utopiaInput');
+    const utopiaOutput = document.getElementById('utopiaOutput');
+    const scaffoldUtopiaBtn = document.getElementById('scaffoldUtopiaBtn');
 
-    let timelineEvents = JSON.parse(localStorage.getItem('timelineEvents') || '[]');
+    scaffoldUtopiaBtn.addEventListener('click', () => {
+      const input = utopiaInput.value.trim();
+      if (!input) return;
 
-    function renderTimeline() {
-      timelineOutput.innerHTML = timelineEvents.map(e => `🕒 [${e.time}] (${e.category}) → ${e.text}`).join('\n');
-    }
+      const blueprint = `🌐 UTOPIA BLUEPRINT\n\n🏛 Core Principles: ${input}\n\n🧱 Key Pillars:\n- Community: decentralized, kin-centric, trust-based\n- Economy: post-scarcity or gift-based with value tracking\n- Governance: participatory AI-enhanced guidance\n- Knowledge: open, lifelong, deeply integrated\n\n🧬 Social DNA: narrative-driven rituals, story-aligned decisions\n\n🚀 Tools: private AI agents, memory banks, sovereignty pods\n\n📡 Next Step: Simulate one node of this utopia in your mind or space.`;
 
-    addTimelineEventBtn.addEventListener('click', () => {
-      const eventText = timelineInput.value.trim();
-      const category = categorySelect.value;
-      if (eventText) {
-        const timestamp = new Date().toLocaleString();
-        timelineEvents.push({ text: eventText, category, time: timestamp });
-        localStorage.setItem('timelineEvents', JSON.stringify(timelineEvents));
-        renderTimeline();
-        timelineInput.value = '';
-      }
+      utopiaOutput.textContent = blueprint;
     });
-
-    saveTimelineBtn.addEventListener('click', () => {
-      const stateName = prompt("Name this timeline state:");
-      if (stateName) {
-        localStorage.setItem(`timelineState_${stateName}`, JSON.stringify(timelineEvents));
-        alert(`Saved as \"${stateName}\"`);
-      }
-    });
-
-    loadTimelineBtn.addEventListener('click', () => {
-      const stateName = prompt("Enter the timeline state name to load:");
-      const saved = localStorage.getItem(`timelineState_${stateName}`);
-      if (saved) {
-        timelineEvents = JSON.parse(saved);
-        localStorage.setItem('timelineEvents', saved);
-        renderTimeline();
-        alert(`Loaded \"${stateName}\"`);
-      } else {
-        alert("No such timeline state found.");
-      }
-    });
-
-    exportBtn.addEventListener('click', () => {
-      const blob = new Blob([JSON.stringify(timelineEvents, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'timeline.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    });
-
-    importBtn.addEventListener('click', () => importFile.click());
-
-    importFile.addEventListener('change', event => {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-      reader.onload = e => {
-        try {
-          timelineEvents = JSON.parse(e.target.result);
-          localStorage.setItem('timelineEvents', JSON.stringify(timelineEvents));
-          renderTimeline();
-        } catch (err) {
-          alert("Invalid timeline file.");
-        }
-      };
-      if (file) reader.readAsText(file);
-    });
-
-    renderTimeline();
   </script>
 </body>
 </html>
+
