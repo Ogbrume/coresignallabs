@@ -143,6 +143,11 @@
       </select>
       <br>
       <button id="addTimelineEventBtn">Add to Timeline</button>
+      <button id="saveTimelineBtn">Save Timeline State</button>
+      <button id="loadTimelineBtn">Load Timeline State</button>
+      <button id="exportTimelineBtn">Export Timeline</button>
+      <input type="file" id="importTimelineFile" style="display:none" />
+      <button id="importTimelineBtn">Import Timeline</button>
       <div id="timelineOutput"></div>
     </div>
     <div class="module">
@@ -161,8 +166,17 @@
     const timelineInput = document.getElementById('timelineEventInput');
     const categorySelect = document.getElementById('eventCategory');
     const addTimelineEventBtn = document.getElementById('addTimelineEventBtn');
+    const saveTimelineBtn = document.getElementById('saveTimelineBtn');
+    const loadTimelineBtn = document.getElementById('loadTimelineBtn');
+    const exportBtn = document.getElementById('exportTimelineBtn');
+    const importBtn = document.getElementById('importTimelineBtn');
+    const importFile = document.getElementById('importTimelineFile');
 
-    const timelineEvents = JSON.parse(localStorage.getItem('timelineEvents') || '[]');
+    let timelineEvents = JSON.parse(localStorage.getItem('timelineEvents') || '[]');
+
+    function renderTimeline() {
+      timelineOutput.innerHTML = timelineEvents.map(e => `🕒 [${e.time}] (${e.category}) → ${e.text}`).join('\n');
+    }
 
     addTimelineEventBtn.addEventListener('click', () => {
       const eventText = timelineInput.value.trim();
@@ -176,9 +190,54 @@
       }
     });
 
-    function renderTimeline() {
-      timelineOutput.innerHTML = timelineEvents.map(e => `🕒 [${e.time}] (${e.category}) → ${e.text}`).join('\n');
-    }
+    saveTimelineBtn.addEventListener('click', () => {
+      const stateName = prompt("Name this timeline state:");
+      if (stateName) {
+        localStorage.setItem(`timelineState_${stateName}`, JSON.stringify(timelineEvents));
+        alert(`Saved as \"${stateName}\"`);
+      }
+    });
+
+    loadTimelineBtn.addEventListener('click', () => {
+      const stateName = prompt("Enter the timeline state name to load:");
+      const saved = localStorage.getItem(`timelineState_${stateName}`);
+      if (saved) {
+        timelineEvents = JSON.parse(saved);
+        localStorage.setItem('timelineEvents', saved);
+        renderTimeline();
+        alert(`Loaded \"${stateName}\"`);
+      } else {
+        alert("No such timeline state found.");
+      }
+    });
+
+    exportBtn.addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(timelineEvents, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'timeline.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    });
+
+    importBtn.addEventListener('click', () => importFile.click());
+
+    importFile.addEventListener('change', event => {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = e => {
+        try {
+          timelineEvents = JSON.parse(e.target.result);
+          localStorage.setItem('timelineEvents', JSON.stringify(timelineEvents));
+          renderTimeline();
+        } catch (err) {
+          alert("Invalid timeline file.");
+        }
+      };
+      if (file) reader.readAsText(file);
+    });
 
     renderTimeline();
   </script>
