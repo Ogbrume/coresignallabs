@@ -73,14 +73,17 @@
     .cta:hover {
       background: #00e6cc;
     }
-    #promptBox {
+    #promptBox, #seedOutput, #timelineOutput {
       margin-top: 1rem;
       padding: 1rem;
       border-radius: 0.5rem;
       background: #121212;
       border: 1px solid #333;
+      color: #0ff;
+      font-family: monospace;
+      white-space: pre-wrap;
     }
-    #userResponse {
+    textarea, select {
       margin-top: 0.5rem;
       width: 100%;
       padding: 0.5rem;
@@ -89,7 +92,7 @@
       background: #0e0e0e;
       color: #eee;
     }
-    #submitBtn, #generateBtn, #seedBtn {
+    button {
       margin-top: 0.5rem;
       padding: 0.5rem 1rem;
       background-color: #0ff;
@@ -99,27 +102,8 @@
       border-radius: 0.5rem;
       cursor: pointer;
     }
-    #submitBtn:hover, #generateBtn:hover, #seedBtn:hover {
+    button:hover {
       background-color: #00e6cc;
-    }
-    #seedInput {
-      margin-top: 0.5rem;
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 0.25rem;
-      border: 1px solid #444;
-      background: #0e0e0e;
-      color: #eee;
-    }
-    #seedOutput {
-      margin-top: 1rem;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      background: #121212;
-      border: 1px solid #333;
-      color: #0ff;
-      font-family: monospace;
-      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -149,6 +133,17 @@
     <div class="module">
       <h2>Timeline Tracker</h2>
       <p>Visualize and branch your past choices. Create save states. Track your evolution.</p>
+      <textarea id="timelineEventInput" rows="3" placeholder="Describe a key event or decision..."></textarea>
+      <select id="eventCategory">
+        <option value="Milestone">Milestone</option>
+        <option value="Turning Point">Turning Point</option>
+        <option value="Regret">Regret</option>
+        <option value="Victory">Victory</option>
+        <option value="Unknown">Unknown</option>
+      </select>
+      <br>
+      <button id="addTimelineEventBtn">Add to Timeline</button>
+      <div id="timelineOutput"></div>
     </div>
     <div class="module">
       <h2>Utopia Scaffolder</h2>
@@ -161,5 +156,31 @@
   </footer>
   <script src="cognitive-core.js"></script>
   <script src="sim-seed.js"></script>
+  <script>
+    const timelineOutput = document.getElementById('timelineOutput');
+    const timelineInput = document.getElementById('timelineEventInput');
+    const categorySelect = document.getElementById('eventCategory');
+    const addTimelineEventBtn = document.getElementById('addTimelineEventBtn');
+
+    const timelineEvents = JSON.parse(localStorage.getItem('timelineEvents') || '[]');
+
+    addTimelineEventBtn.addEventListener('click', () => {
+      const eventText = timelineInput.value.trim();
+      const category = categorySelect.value;
+      if (eventText) {
+        const timestamp = new Date().toLocaleString();
+        timelineEvents.push({ text: eventText, category, time: timestamp });
+        localStorage.setItem('timelineEvents', JSON.stringify(timelineEvents));
+        renderTimeline();
+        timelineInput.value = '';
+      }
+    });
+
+    function renderTimeline() {
+      timelineOutput.innerHTML = timelineEvents.map(e => `🕒 [${e.time}] (${e.category}) → ${e.text}`).join('\n');
+    }
+
+    renderTimeline();
+  </script>
 </body>
 </html>
