@@ -89,7 +89,7 @@
       background: #0e0e0e;
       color: #eee;
     }
-    #submitBtn, #generateBtn {
+    #submitBtn, #generateBtn, #seedBtn {
       margin-top: 0.5rem;
       padding: 0.5rem 1rem;
       background-color: #0ff;
@@ -99,8 +99,27 @@
       border-radius: 0.5rem;
       cursor: pointer;
     }
-    #submitBtn:hover, #generateBtn:hover {
+    #submitBtn:hover, #generateBtn:hover, #seedBtn:hover {
       background-color: #00e6cc;
+    }
+    #seedInput {
+      margin-top: 0.5rem;
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid #444;
+      background: #0e0e0e;
+      color: #eee;
+    }
+    #seedOutput {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background: #121212;
+      border: 1px solid #333;
+      color: #0ff;
+      font-family: monospace;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -122,6 +141,10 @@
     <div class="module">
       <h2>Sim-Seed Engine</h2>
       <p>Design your internal world—archetypes, rules, roles, and realms—starting from your values.</p>
+      <textarea id="seedInput" rows="4" placeholder="Seed your world (e.g., Loyalty, Fire, Sovereign)..."></textarea>
+      <br>
+      <button id="seedBtn">Generate Sim Schema</button>
+      <div id="seedOutput"></div>
     </div>
     <div class="module">
       <h2>Timeline Tracker</h2>
@@ -137,5 +160,6 @@
     <a class="cta" href="#">Enter the Lab</a>
   </footer>
   <script src="cognitive-core.js"></script>
+  <script src="sim-seed.js"></script>
 </body>
 </html>
